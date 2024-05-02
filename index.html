@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <title>Formularz Rejestracji</title>
+</head>
+<body>
+  <h1>Rejestracja</h1>
+  
+  <form id="signup-form">
+    <label for="name">Imię:</label>
+    <input type="text" id="name" name="name" required><br><br>
+
+    <label for="email">Email:</label>
+    <input type="email" id="email" name="email" required><br><br>
+
+    <label for="password">Hasło:</label>
+    <input type="password" id="password" name="password" required><br><br>
+
+    <button type="button" onclick="submitForm()">Wyślij</button>
+  </form>
+
+  <script>
+    async function submitForm() {
+      const form = document.getElementById('signup-form');
+      const formData = new FormData(form);
+
+      const jsonObject = {};
+      formData.forEach((value, key) => {
+        jsonObject[key] = value;
+      });
+
+      try {
+        // Wysłanie danych formularza do serwera Express.js
+        const response = await fetch('http://127.0.0.1:3000/api/formularz', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(jsonObject)
+        });
+
+        if (response.ok) {
+          const result = await response.json();
+          console.log('Serwer odpowiedział:', result.message);
+          alert('Formularz został wysłany pomyślnie');
+        } else {
+          console.error('Błąd podczas wysyłania formularza: ', {error});
+          alert('Wystąpił błąd podczas wysyłania formularza');
+        }
+      } catch (error) {
+        console.error('Błąd:', error);
+        alert('Wystąpił błąd: ' + error.message);
+      }
+    }
+  </script>
+</body>
+</html>
