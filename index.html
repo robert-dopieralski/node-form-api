@@ -20,6 +20,10 @@
     <button type="button" onclick="submitForm()">Wyślij</button>
   </form>
 
+  <h2>Lista Formularzy</h2>
+  <button onclick="fetchFormularze()">Pobierz formularze</button>
+  <ul id="formularze-list"></ul>
+
   <script>
     async function submitForm() {
       const form = document.getElementById('signup-form');
@@ -51,6 +55,53 @@
       } catch (error) {
         console.error('Błąd:', error);
         alert('Wystąpił błąd: ' + error.message);
+      }
+    }
+
+    async function deleteFormularz(email) {
+      try {
+        const response = await fetch(`http://127.0.0.1:3000/api/formularz/${email}`, {
+          method: 'DELETE',
+        });
+
+        if (response.ok) {
+          alert('Formularz został usunięty');
+          fetchFormularze(); // Odśwież listę po usunięciu formularza
+        } else {
+          const error = await response.json();
+          alert(`Błąd: ${error.message}`);
+        }
+      } catch (error) {
+        console.error('Błąd:', error);
+        alert('Wystąpił błąd podczas usuwania formularza');
+      }
+    }
+
+    async function fetchFormularze() {
+      try {
+        const response = await fetch('http://127.0.0.1:3000/api/formularze');
+        if (response.ok) {
+          const formularze = await response.json();
+          const listElement = document.getElementById('formularze-list');
+
+          listElement.innerHTML = '';
+
+          formularze.forEach((formularz) => {
+            const listItem = document.createElement('li');
+            listItem.textContent = `Imię: ${formularz.name}, Email: ${formularz.email}`;
+            
+            // Dodaj przycisk "Usuń"
+            const deleteButton = document.createElement('button');
+            deleteButton.textContent = 'Usuń';
+            deleteButton.onclick = () => deleteFormularz(formularz.email);
+
+            listItem.appendChild(deleteButton);
+            listElement.appendChild(listItem);
+          });
+        }
+      } catch (error) {
+        console.error('Błąd:', error);
+        alert('Nie można pobrać formularzy');
       }
     }
   </script>
