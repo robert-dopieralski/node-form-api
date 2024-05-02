@@ -23,12 +23,12 @@ app.post('/api/formularz', (req, res) => {
       return;
     }
   
-    const nowyFormularz = { name, email, password };
+    const nowyFormularz = { name, email, password, id: new Date().toISOString() };
     formularze.push(nowyFormularz);
   
     console.log('Dodano formularz:', nowyFormularz);
   
-    res.status(200).json({ message: 'Formularz dodany pomyślnie', data: nowyFormularz });
+    res.status(200).json(nowyFormularz);
   });
 
 app.get('/api/formularze', (req, res) => {

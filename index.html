@@ -88,11 +88,13 @@
 
           formularze.forEach((formularz) => {
             const listItem = document.createElement('li');
-            listItem.textContent = `Imię: ${formularz.name}, Email: ${formularz.email}`;
+            listItem.id = formularz.id
+            listItem.textContent = `Imię: ${formularz.name}, Email: ${formularz.email} id: ${formularz.id}`;
             
             // Dodaj przycisk "Usuń"
             const deleteButton = document.createElement('button');
             deleteButton.textContent = 'Usuń';
+            deleteButton['data-testID'] = formularz.id
             deleteButton.onclick = () => deleteFormularz(formularz.email);
 
             listItem.appendChild(deleteButton);
@@ -104,6 +106,8 @@
         alert('Nie można pobrać formularzy');
       }
     }
+
+    fetchFormularze()
   </script>
 </body>
 </html>
