@@ -94,7 +94,7 @@
             // Dodaj przycisk "Usuń"
             const deleteButton = document.createElement('button');
             deleteButton.textContent = 'Usuń';
-            deleteButton['data-testID'] = formularz.id
+            deleteButton['data-testid'] = formularz.id
             deleteButton.onclick = () => deleteFormularz(formularz.email);
 
             listItem.appendChild(deleteButton);

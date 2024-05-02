@@ -14,7 +14,7 @@ const sampleData = {
 test.describe("testuje aplikacje", () => {
     // tescik 1
     test("mozna dodac, wylistowac i usunac dodany rekord", async ({ page }) => {
-        let storedId = "";
+        let storedId = ""; // tutaj trzymamy id utworzonego konta dla testow
         await page.goto("http://localhost:5500/");
 
         const imieLocator = getImieLocator(page);
@@ -39,8 +39,6 @@ test.describe("testuje aplikacje", () => {
         await page.getByRole("button", { name: "Wyślij" }).click();
         await page.getByRole("button", { name: "Pobierz formularze" }).click();
 
-        console.warn({ storedId });
-
         const listedKowalski = page.getByText(
             `Imię: ${sampleData.name}, Email: ${sampleData.email} id: ${storedId}`
         );
@@ -48,11 +46,22 @@ test.describe("testuje aplikacje", () => {
         await expect(listedKowalski).toBeVisible();
 
         // usuwamy ziutka:
-        const deleteZiutekButton = page.locator(`Usuń`).first();
-        // await expect(deleteZiutekButton).toBeVisible();
+        // łapiemy element nadrzędny który zawiera dane ziutka i ma swoje ID w htmlu
+        const listItemLocator = page.locator(`id=${storedId}`);
 
-        // await deleteZiutekButton.click();
-        // await expect(listedKowalski).not.toBeVisible();
+        // w złapanym elemencie znajdujemy button do usuwania
+        const deleteZiutekButton = listItemLocator.getByRole("button", {
+            name: "Usuń",
+        });
+
+        // spodziewamy sie, ze button jest widoczny
+        await expect(deleteZiutekButton).toBeVisible();
+
+        // dusimy button
+        await deleteZiutekButton.click();
+
+        // ziutek nie powinien byc juz widoczny
+        await expect(listedKowalski).not.toBeVisible();
     });
 
     // tescik 2
